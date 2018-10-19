@@ -1,3 +1,7 @@
+# Authors: Pierre Ablin <pierre.ablin@inria.fr>
+#          Dylan Fagot
+#
+# License: MIT
 from time import time
 
 import matplotlib.pyplot as plt

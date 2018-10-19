@@ -11,7 +11,7 @@ def update_nmf_sparse(V, W, H, V_hat, regul):
         Cedric Fevotte and Jerome Idier
         "Algorithms for non-negative matrix factorization with the
         beta-divergence"
-        Neural Computations, vol. 23, no. 9, pp. 2421–2456, 2011
+        Neural Computations, 2011
 
     Parameters
     ----------
@@ -50,8 +50,7 @@ def update_nmf_smooth(V, W, H, V_hat, regul):
         Cedric Fevotte
         "Majorization-minimization algorithm for smooth itakura-saito
         nonnegative matrix factorization"
-        International Conference on Acoustics, Speech and Signal Processing,
-        2011, pp. 1980–1983
+        ICASSP, 2011
 
     Parameters
     ----------

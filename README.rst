@@ -37,11 +37,11 @@ To check that everything worked, the following command should not return any err
 Use
 ===
 
-The main function in `tlnmf` is `tlnmf.tl_nmf`. Given a frames matrix Y and a rank K, it outputs the learned Phi, W, H. Read the docstring of the function for an accurate description of its parameters.
+The main function in `kernprof` is `tlnmf.tl_nmf`. Given a frames matrix Y and a rank K, it outputs the learned Phi, W, H. Read the docstring of the function for an accurate description of its parameters.
 
 The function `tlnmf.signal_to_frame` is there to build the frames matrix from the signal.
 
-The file `examples/example_amstrong.py` contains a practical example on the song My Heart by Louis Amstrong.
+The file `examples/example_armstrong.py` contains a practical example on the song My Heart by Louis Armstrong.
 
 
 Dependencies

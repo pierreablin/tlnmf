@@ -18,16 +18,14 @@ signal, fs = sf.read(song_adr)
 
 window_size = 40e-3
 Y = signal_to_frames(signal, fs, window_size)
+
 # Apply TL_NMF
 
 K = 10
 
 t0 = time()
 
-Phi, W, H, obj_list, Pi = tl_nmf(Y, K, Phi='random', verbose=True,
-                                 max_iter=100,
-                                 rng=rng, n_iter_optim=5, tol=1e-4, regul=0,
-                                 regul_type='sparse')
+Phi, W, H, Phi_init, obj_list = tl_nmf(Y, K, verbose=True, rng=rng)
 
 fit_time = time() - t0
 
@@ -37,7 +35,7 @@ fit_time = time() - t0
 t = np.linspace(0, fit_time, len(obj_list))
 
 plt.figure()
-plt.plot(t, obj_list)
+plt.loglog(t, obj_list)
 plt.xlabel('Time (sec.)')
 plt.ylabel('Objective function')
 plt.show()
@@ -47,7 +45,6 @@ plt.show()
 
 X = np.dot(Phi, Y)
 power = np.linalg.norm(X, axis=1)
-
 shape_to_plot = (3, 2)
 
 n_atoms = np.prod(shape_to_plot)
@@ -56,7 +53,6 @@ idx_to_plot = np.argsort(power)[-n_atoms:]
 f, ax = plt.subplots(*shape_to_plot)
 f.suptitle('Learned atoms')
 for axe, idx in zip(ax.ravel(), idx_to_plot):
-    axe.plot(Pi[idx])
     axe.plot(Phi[idx])
-    axe.grid(False)
+    axe.axis('off')
 plt.show()

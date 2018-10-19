@@ -96,5 +96,8 @@ def update_nmf_smooth(V, W, H, V_hat, regul):
     V_hat = np.dot(W, H)
     V_he = V_hat + eps
     W = W * np.dot(Ve * V_he ** -2., H.T) / np.dot(1. / V_he, H.T)
-    W = W / np.sum(W, axis=0)
+    # Normalization
+    scale = np.sum(W, axis=0)
+    W = W / scale
+    H = H / scale[None, :]
     return W, H

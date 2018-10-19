@@ -1,3 +1,7 @@
+# Authors: Pierre Ablin <pierre.ablin@inria.fr>
+#          Dylan Fagot
+#
+# License: MIT
 import numpy as np
 from scipy.optimize import line_search
 from scipy.linalg import expm

@@ -28,7 +28,7 @@ And then install it using `pip`::
 
     $ pip install -e.
 
-To check that everything worked, the following command should not return any error:
+To check that everything worked, the following command should not return any error::
 
     $ python -c 'import tlnmf'
 

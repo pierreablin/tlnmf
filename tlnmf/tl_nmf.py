@@ -12,7 +12,7 @@ from .transform_learning import fast_transform_learning
 
 
 def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
-           n_iter_optim=5, tol=1e-5, verbose=False, rng=None):
+           n_iter_optim=5, tol=1e-4, verbose=False, rng=None):
     '''Runs Transform learning NMF
 
     Parameters
@@ -125,8 +125,8 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
         if verbose:
             eps1 = old_obj - obj1
             eps2 = obj1 - obj
-            delta_phi = np.linalg.norm(Phi - Phi_old) / M ** 2
-            delta_phi_init = np.linalg.norm(Phi - Phi_init) / M ** 2
+            delta_phi = np.mean(np.abs(Phi - Phi_old))
+            delta_phi_init = np.mean(np.abs(Phi - Phi_init))
             print(' | '.join([("%d" % (n+1)).rjust(8),
                               ("%.2e" % obj).rjust(8),
                               ("%.2e" % eps).rjust(8),

@@ -75,7 +75,7 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
     rng = check_random_state(rng)
     # Initialization
     if regul is None:
-        regul = 1e6
+        regul = 1e6 * float(K) / M
     if Phi is None:
         Phi = 'random'
     if Phi == 'random':

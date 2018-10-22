@@ -12,7 +12,7 @@ from .transform_learning import fast_transform_learning
 
 
 def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
-           n_iter_optim=5, tol=1e-4, verbose=False, rng=None):
+           n_iter_tl=5, tol=1e-4, verbose=False, rng=None):
     '''Runs Transform learning NMF
 
     Parameters
@@ -40,7 +40,7 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
     max_iter : int, optional
         Maximal number of iterations for the algorithm
 
-    n_iter_optim : int, optional
+    n_iter_tl : int, optional
         Number of iteration of Transform learning between NMF steps
 
     tol : float, optional
@@ -76,12 +76,13 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
     # Initialization
     if regul is None:
         regul = 1e6 * float(K) / M
-    if Phi is None:
-        Phi = 'random'
-    if Phi == 'random':
-        Phi = unitary_projection(rng.randn(M, M))
-    elif Phi == 'dct':
-        Phi = fftpack.dct(np.eye(M), 3, norm='ortho')
+    if type(Phi) is not np.ndarray:
+        if Phi is None:
+            Phi = 'random'
+        if Phi == 'random':
+            Phi = unitary_projection(rng.randn(M, M))
+        elif Phi == 'dct':
+            Phi = fftpack.dct(np.eye(M), 3, norm='ortho')
     if W is None:
         W = np.abs(rng.randn(M, K)) + 1.
         W = W / np.sum(W, axis=0)
@@ -112,7 +113,7 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
         V_hat = np.dot(W, H)
         obj1 = is_div(V, V_hat) + regul * penalty(H, regul_type)
         Phi_old = Phi.copy()
-        Phi, X = fast_transform_learning(Phi, X, V_hat, n_iter_optim)
+        Phi, X = fast_transform_learning(Phi, X, V_hat, n_iter_tl)
         V = X ** 2
         # Check terminaison
         old_obj = obj.copy()

@@ -29,13 +29,13 @@ K = 10
 
 t0 = time()
 
-Phi, W, H, Phi_init, obj_list = tl_nmf(Y, K, verbose=True, rng=rng)
+Phi, W, H, Phi_init, infos = tl_nmf(Y, K, verbose=True, rng=rng)
 
 fit_time = time() - t0
 
 
 # Plot the convergence curve:
-
+obj_list = infos['obj_list']
 t = np.linspace(0, fit_time, len(obj_list))
 
 plt.figure()

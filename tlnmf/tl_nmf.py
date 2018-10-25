@@ -65,10 +65,13 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
     H : array, shape (K, N)
         The estimated activations
 
-    obj_list : list
-        list of objective values
+    Phi_init : array, shape (M, M)
+        Initial Phi
+
+    infos_list : dict
+        Contains various metrics monitoring convergence. Same as printed by
+        Verbose.
     '''
-    eps = 1e-15
     regul_type = 'sparse'
     M, N = Y.shape
 
@@ -94,8 +97,15 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
     V_hat = np.dot(W, H)  # Initial factorization
 
     obj = is_div(V, V_hat) + regul * penalty(H, regul_type)  # Objective
-    obj_list = []
     Phi_init = Phi.copy()
+
+    # Monitoring
+    obj_list = []
+    eps_list = []
+    tl_obj_list = []
+    nmf_obj_list = []
+    d_phi_list = []
+    d_phi_i_list = []
     # Verbose
     if verbose:
         print('Running TL-NMF with %s regularization on a %d x %d '
@@ -115,19 +125,25 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
         Phi_old = Phi.copy()
         Phi, X = fast_transform_learning(Phi, X, V_hat, n_iter_tl)
         V = X ** 2
-        # Check terminaison
+        # Monitoring
         old_obj = obj.copy()
         obj = is_div(V, V_hat) + regul * penalty(H, regul_type)
-        obj_list.append(obj)
         eps = (old_obj - obj) / (np.abs(obj) + np.abs(old_obj))
+        eps1 = old_obj - obj1
+        eps2 = obj1 - obj
+        delta_phi = np.mean(np.abs(Phi - Phi_old))
+        delta_phi_init = np.mean(np.abs(Phi - Phi_init))
+
+        obj_list.append(obj)
+        eps_list.append(eps)
+        tl_obj_list.append(eps2)
+        nmf_obj_list.append(eps1)
+        d_phi_list.append(delta_phi)
+        d_phi_i_list.append(delta_phi_init)
+        # Terminaison
         if np.abs(eps) < tol:
             break
-
         if verbose:
-            eps1 = old_obj - obj1
-            eps2 = obj1 - obj
-            delta_phi = np.mean(np.abs(Phi - Phi_old))
-            delta_phi_init = np.mean(np.abs(Phi - Phi_init))
             print(' | '.join([("%d" % (n+1)).rjust(8),
                               ("%.2e" % obj).rjust(8),
                               ("%.2e" % eps).rjust(8),
@@ -135,4 +151,7 @@ def tl_nmf(Y, K, Phi=None, W=None, H=None, regul=None, max_iter=300,
                               ("%.2e" % eps2).rjust(8),
                               ("%.2e" % delta_phi).rjust(8),
                               ("%.2e" % delta_phi_init).rjust(8)]))
-    return Phi, W, H, Phi_init, obj_list
+    infos = dict(obj_list=obj_list, eps_list=eps_list, tl_obj_list=tl_obj_list,
+                 nmf_obj_list=nmf_obj_list, d_phi_list=d_phi_list,
+                 d_phi_i_list=d_phi_i_list)
+    return Phi, W, H, Phi_init, infos
